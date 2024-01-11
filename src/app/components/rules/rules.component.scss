@@ -1,0 +1,68 @@
+@use "../../../styles/variables";
+
+.container {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+
+  .card {
+    width: 100%;
+    position: relative;
+    border-radius: 4rem;
+    padding: 3rem 2rem 6.3rem;
+    background: variables.$white;
+    border: 0.3rem solid variables.$black;
+    box-shadow: 0 1rem 0 0 variables.$black;
+
+    .title {
+      font-size: 5.6rem;
+      text-align: center;
+      margin-bottom: 2.9rem;
+      color: variables.$black;
+      text-transform: uppercase;
+      font-family: "SpaceGrotesk-Bold";
+    }
+
+    .subtitle {
+      font-size: 2rem;
+      margin-bottom: 1.6rem;
+      color: variables.$purple;
+      text-transform: uppercase;
+    }
+
+    .text {
+      font-size: 1.6rem;
+      margin-bottom: 3.3rem;
+      color: rgba(variables.$black, 0.6611);
+    }
+
+    .list {
+      gap: 1.1rem;
+      display: flex;
+      flex-direction: column;
+
+      &__item {
+        gap: 1.9rem;
+        display: flex;
+        align-items: flex-start;
+
+        .text {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    .check {
+      left: 50%;
+      bottom: -4rem;
+      cursor: pointer;
+      position: absolute;
+      transform: translateX(-50%);
+
+      &:hover {
+        content: url("/assets/images/icon-check-purple.svg");
+      }
+    }
+  }
+}

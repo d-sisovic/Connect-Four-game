@@ -1,1 +1,15 @@
-<p>home works!</p>
+<div class="container">
+  <img src="assets/images/logo.svg" alt="logo" class="logo">
+
+  <div class="option">
+    <app-button label="play vs cpu" (clickEvent)="onPlayVsCpu()">
+      <img src="assets/images/player-vs-cpu.svg" alt="player-vs-cpu">
+    </app-button>
+
+    <app-button label="play vs player" [color]="getColor.YELLOW" (clickEvent)="onPlayVsPlayer()">
+      <img src="assets/images/player-vs-player.svg" alt="player-vs-player">
+    </app-button>
+
+    <app-button label="game rules" [color]="getColor.WHITE" (clickEvent)="onReadGameRules()"></app-button>
+  </div>
+</div>
