@@ -1,0 +1,76 @@
+<div class="container">
+  <div class="grid" (mouseover)="onMouseOverGrid($event)" (click)="onGridClick($event)">
+    <span class="cell" data-row="0" data-column="0" #cell></span>
+    <span class="cell" data-row="0" data-column="1" #cell></span>
+    <span class="cell" data-row="0" data-column="2" #cell></span>
+    <span class="cell" data-row="0" data-column="3" #cell></span>
+    <span class="cell" data-row="0" data-column="4" #cell></span>
+    <span class="cell" data-row="0" data-column="5" #cell></span>
+    <span class="cell" data-row="0" data-column="6" #cell></span>
+
+    <span class="cell" data-row="1" data-column="0" #cell></span>
+    <span class="cell" data-row="1" data-column="1" #cell></span>
+    <span class="cell" data-row="1" data-column="2" #cell></span>
+    <span class="cell" data-row="1" data-column="3" #cell></span>
+    <span class="cell" data-row="1" data-column="4" #cell></span>
+    <span class="cell" data-row="1" data-column="5" #cell></span>
+    <span class="cell" data-row="1" data-column="6" #cell></span>
+
+    <span class="cell" data-row="2" data-column="0" #cell></span>
+    <span class="cell" data-row="2" data-column="1" #cell></span>
+    <span class="cell" data-row="2" data-column="2" #cell></span>
+    <span class="cell" data-row="2" data-column="3" #cell></span>
+    <span class="cell" data-row="2" data-column="4" #cell></span>
+    <span class="cell" data-row="2" data-column="5" #cell></span>
+    <span class="cell" data-row="2" data-column="6" #cell></span>
+
+    <span class="cell" data-row="3" data-column="0" #cell></span>
+    <span class="cell" data-row="3" data-column="1" #cell></span>
+    <span class="cell" data-row="3" data-column="2" #cell></span>
+    <span class="cell" data-row="3" data-column="3" #cell></span>
+    <span class="cell" data-row="3" data-column="4" #cell></span>
+    <span class="cell" data-row="3" data-column="5" #cell></span>
+    <span class="cell" data-row="3" data-column="6" #cell></span>
+
+    <span class="cell" data-row="4" data-column="0" #cell></span>
+    <span class="cell" data-row="4" data-column="1" #cell></span>
+    <span class="cell" data-row="4" data-column="2" #cell></span>
+    <span class="cell" data-row="4" data-column="3" #cell></span>
+    <span class="cell" data-row="4" data-column="4" #cell></span>
+    <span class="cell" data-row="4" data-column="5" #cell></span>
+    <span class="cell" data-row="4" data-column="6" #cell></span>
+
+    <span class="cell" data-row="5" data-column="0" #cell></span>
+    <span class="cell" data-row="5" data-column="1" #cell></span>
+    <span class="cell" data-row="5" data-column="2" #cell></span>
+    <span class="cell" data-row="5" data-column="3" #cell></span>
+    <span class="cell" data-row="5" data-column="4" #cell></span>
+    <span class="cell" data-row="5" data-column="5" #cell></span>
+    <span class="cell" data-row="5" data-column="6" #cell></span>
+  </div>
+
+
+  @if(isFirstPlayerPlaying()) {
+  <div class="turn">
+    <img src="assets/images/turn-background-red.svg" alt="turn-background-red">
+
+    <div class="text">
+      <span class="label">Your Turn</span>
+
+      <span class="score">{{gameCounter()}}s</span>
+    </div>
+  </div>
+  } @else {
+  <div class="turn">
+    <img src="assets/images/turn-background-yellow.svg" alt="turn-background-yellow">
+
+    <div class="text text--other">
+      <span class="label">{{mode}}'s Turn</span>
+
+      <span class="score">{{gameCounter()}}s</span>
+    </div>
+  </div>
+  }
+
+  <div class="footer"></div>
+</div>

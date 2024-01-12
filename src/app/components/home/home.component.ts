@@ -1,4 +1,5 @@
 import { Router } from '@angular/router';
+import { GameMode } from '../../ts/enum/game-mode.enum';
 import { RoutePath } from '../../ts/enum/route-path.enum';
 import { ButtonComponent } from '../ui/button/button.component';
 import { ButtonColor } from '../ui/button/ts/enums/button-color.enum';
@@ -17,11 +18,11 @@ export class HomeComponent {
   private router = inject(Router);
 
   public onPlayVsCpu(): void {
-
+    this.router.navigateByUrl(RoutePath.GAME + `/${GameMode.CPU}`);
   }
 
   public onPlayVsPlayer(): void {
-
+    this.router.navigateByUrl(RoutePath.GAME + `/${GameMode.PLAYER}`);
   }
 
   public onReadGameRules(): void {
