@@ -1,0 +1,38 @@
+@use "../../../../../styles/variables";
+
+.turn {
+  left: 50%;
+  z-index: 999;
+  height: 15rem;
+  width: 19.1rem;
+  position: absolute;
+  top: calc(100% - 2.5rem);
+  transform: translateX(-50%);
+
+  .text {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    font-size: 1.6rem;
+    text-align: center;
+    position: absolute;
+    flex-direction: column;
+    color: variables.$white;
+    padding: 4.1rem 0 1.6rem;
+    font-family: "SpaceGrotesk-Bold";
+
+    &--other {
+      color: variables.$black;
+    }
+
+    .label {
+      text-transform: uppercase;
+    }
+
+    .score {
+      font-size: 5.6rem;
+    }
+  }
+}

@@ -1,17 +1,24 @@
+import { NgClass } from '@angular/common';
+import { TurnComponent } from '../turn/turn.component';
+import { WinnerComponent } from '../winner/winner.component';
 import { GameMode } from '../../../../ts/enum/game-mode.enum';
 import { GameService } from '../../../../services/game.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { IPlayerWin } from '../../../../ts/models/player-win.model';
 import { GameFlowService } from '../../../../services/game-flow.service';
 import {
-  AfterViewInit, inject,
-  ChangeDetectionStrategy, Component, DestroyRef, ElementRef,
-  Input, OnInit, QueryList, Renderer2, Signal, ViewChildren
+  AfterViewInit, inject, ChangeDetectionStrategy, Component,
+  DestroyRef, ElementRef, Input, OnInit, QueryList, Renderer2, Signal, ViewChildren
 } from '@angular/core';
 
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [],
+  imports: [
+    NgClass,
+    TurnComponent,
+    WinnerComponent
+  ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -27,6 +34,9 @@ export class TableComponent implements OnInit, AfterViewInit {
   private readonly gameService = inject(GameService);
   private readonly gameFlowService = inject(GameFlowService);
 
+  public animatedGrid!: boolean;
+  public winnerInfo!: IPlayerWin;
+
   public gameCounter!: Signal<number>;
   public isFirstPlayerPlaying!: Signal<boolean>;
 
@@ -34,6 +44,7 @@ export class TableComponent implements OnInit, AfterViewInit {
 
   public ngOnInit(): void {
     this.initGameCounter();
+    this.watchSetWinnerInfo();
     this.watchChangeMarkerColors();
 
     this.gameCounter = this.gameFlowService.getGameCounter;
@@ -80,6 +91,30 @@ export class TableComponent implements OnInit, AfterViewInit {
     this.setMarkerImage(markerElement);
     this.renderer2.addClass(markerElement, 'marker');
     this.renderer2.appendChild(matchingElement.nativeElement, markerElement);
+  }
+
+  private watchSetWinnerInfo(): void {
+    this.gameFlowService.getWinnerInfo$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(winnerInfo => {
+        this.winnerInfo = winnerInfo;
+
+        this.markWinnerCircles();
+      });
+  }
+
+  private markWinnerCircles(): void {
+    this.winnerInfo.winningIndexes.forEach(item => {
+      const { rowIndex, columnIndex } = item;
+      const matchingElement = this.getMatchingElementByRowColumn(rowIndex.toString(), columnIndex.toString());
+
+      if (!matchingElement) { return; }
+
+      const circleElement = this.renderer2.createElement('span');
+
+      this.renderer2.addClass(circleElement, 'winner');
+      this.renderer2.appendChild(matchingElement.nativeElement, circleElement);
+    });
   }
 
   private watchChangeMarkerColors(): void {

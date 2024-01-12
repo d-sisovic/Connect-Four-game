@@ -17,23 +17,27 @@ $cell-width: 3.95rem;
 .container {
   height: 32rem;
   position: relative;
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-image: url("/assets/images/board-layer-white-small.svg"), url("/assets/images/board-layer-black-small.svg");
 
-  .footer {
-    left: -2rem;
-    z-index: -1;
-    width: 100vw;
-    height: 21rem;
+  .black-board,
+  .white-board {
+    top: 0;
+    left: 50%;
     position: absolute;
-    top: calc(100% - 1.5rem);
-    border-radius: 6rem 6rem 0 0;
-    background: variables.$dark-purple;
+    transform: translateX(-50%);
+  }
+
+  .black-board {
+    z-index: 1;
+  }
+
+  .white-board {
+    z-index: 3;
+    pointer-events: none;
   }
 
   .grid {
     left: 50%;
+    z-index: 2;
     gap: 0.7rem;
     top: 0.79rem;
     width: 32rem;
@@ -61,46 +65,39 @@ $cell-width: 3.95rem;
 
         @for $i from 0 through 5 {
           &--animation-#{$i} {
-            animation: moveAnimation#{$i} 0.5s forwards;
+            animation: moveAnimation#{$i} 1s forwards;
           }
         }
+      }
+
+      .winner {
+        width: 2rem;
+        top: 1.1rem;
+        left: 1.1rem;
+        height: 2rem;
+        border-radius: 50%;
+        position: absolute;
+        border: 0.6rem solid variables.$white;
       }
     }
   }
 
-  .turn {
-    left: 50%;
-    height: 15rem;
-    width: 19.1rem;
+  .footer {
+    left: -2rem;
+    z-index: -1;
+    width: 100vw;
+    height: 21rem;
     position: absolute;
-    top: calc(100% - 2.5rem);
-    transform: translateX(-50%);
+    top: calc(100% - 1.5rem);
+    border-radius: 6rem 6rem 0 0;
+    background: variables.$dark-purple;
 
-    .text {
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      display: flex;
-      font-size: 1.6rem;
-      text-align: center;
-      position: absolute;
-      flex-direction: column;
-      color: variables.$white;
-      padding: 4.1rem 0 1.6rem;
-      font-family: "SpaceGrotesk-Bold";
+    &--first {
+      background: variables.$red;
+    }
 
-      &--other {
-        color: variables.$black;
-      }
-
-      .label {
-        text-transform: uppercase;
-      }
-
-      .score {
-        font-size: 5.6rem;
-      }
+    &--second {
+      background: variables.$yellow;
     }
   }
 }
