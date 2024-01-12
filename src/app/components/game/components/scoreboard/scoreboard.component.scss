@@ -1,0 +1,22 @@
+@use "../../../../../styles/variables";
+
+.container {
+  display: flex;
+  width: 14.2rem;
+  font-size: 1.6rem;
+  position: relative;
+  align-items: center;
+  border-radius: 2rem;
+  flex-direction: column;
+  color: variables.$black;
+  text-transform: uppercase;
+  padding: 1rem 5.4rem 0.9rem;
+  background: variables.$white;
+  font-family: "SpaceGrotesk-Bold";
+  border: 0.3rem solid variables.$black;
+  box-shadow: 0 1rem 0 0 variables.$black;
+
+  .score {
+    font-size: 3.2rem;
+  }
+}

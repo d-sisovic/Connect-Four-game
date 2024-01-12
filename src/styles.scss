@@ -3,3 +3,8 @@
 @use "./styles/reset";
 @use "./styles/variables";
 @use "./styles/breakpoints";
+
+body {
+  padding: 0 2rem;
+  background: variables.$purple;
+}

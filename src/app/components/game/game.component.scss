@@ -1,0 +1,33 @@
+.container {
+  padding-top: 5rem;
+
+  .header {
+    display: flex;
+    margin-bottom: 5rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .scoreboard {
+    gap: 2.1rem;
+    display: flex;
+    padding: 0 1.6rem;
+    align-items: center;
+    margin-bottom: 5rem;
+    justify-content: space-between;
+
+    .avatar {
+      top: 50%;
+      position: absolute;
+      transform: translateY(-50%);
+
+      &--first {
+        left: -2.7rem;
+      }
+
+      &--last {
+        right: -2.7rem;
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+<button class="button" [ngClass]="{
+  'button--red': color === getColor.RED,
+  'button--white': color === getColor.WHITE,
+  'button--yellow': color === getColor.YELLOW
+  }" (click)="onButtonClick()">
+  {{label}}
+
+  <ng-content></ng-content>
+</button>
