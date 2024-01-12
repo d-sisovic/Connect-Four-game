@@ -1,4 +1,5 @@
 import { GameService } from './game.service';
+import { IPlayerWin } from '../ts/models/player-win.model';
 import { GameSettings } from '../ts/enum/game-settings.enum';
 import { Injectable, Signal, inject, signal } from '@angular/core';
 import { Observable, Subject, switchMap, tap, filter, map, timer } from 'rxjs';
@@ -14,6 +15,7 @@ export class GameFlowService {
   private gameCounter = signal(GameSettings.PLAYER_TURN_LENGTH);
 
   private newPlayerTurn = new Subject<void>();
+  private winnerInfo = new Subject<IPlayerWin>();
 
   constructor() { }
 
@@ -49,5 +51,13 @@ export class GameFlowService {
   public handleNextUserPlay(): void {
     this.gameService.toggleFirstPlayerPlaying();
     this.emitNewPlayerTurn();
+  }
+
+  public setWinnerInfo(winnerInfo: IPlayerWin): void {
+    this.winnerInfo.next(winnerInfo);
+  }
+
+  public get getWinnerInfo$(): Observable<IPlayerWin> {
+    return this.winnerInfo.asObservable();
   }
 }
