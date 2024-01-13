@@ -14,6 +14,7 @@ export class ButtonComponent {
 
   @Output() clickEvent = new EventEmitter();
 
+  @Input() centeredText: boolean = false;
   @Input({ required: true }) label!: string;
   @Input() color: ButtonColor = ButtonColor.RED;
 

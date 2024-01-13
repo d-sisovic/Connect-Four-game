@@ -8,22 +8,31 @@
   </div>
 
   <div class="scoreboard">
-    <app-scoreboard label="YOU" [score]="0">
+    <app-scoreboard label="YOU" [score]="playersScore().playerOneScore" [ownScore]="true">
       @if(playerMode === getPlayerMode.CPU) {
-        <img src="assets/images/you.svg" alt="you" class="avatar avatar--first">
+      <img src="assets/images/you.svg" alt="you" class="avatar avatar--first">
       } @else {
-        <img src="assets/images/player-one.svg" alt="player-one" class="avatar avatar--first">
+      <img src="assets/images/player-one.svg" alt="player-one" class="avatar avatar--first">
       }
     </app-scoreboard>
 
-    <app-scoreboard [label]="playerMode" [score]="0">
+    <app-scoreboard [label]="playerMode" [score]="playersScore().playerTwoScore">
       @if(playerMode === getPlayerMode.CPU) {
-        <img src="assets/images/cpu.svg" alt="cpu" class="avatar avatar--last">
+      <img src="assets/images/cpu.svg" alt="cpu" class="avatar avatar--last">
       } @else {
-        <img src="assets/images/player-two.svg" alt="player-two" class="avatar avatar--last">
+      <img src="assets/images/player-two.svg" alt="player-two" class="avatar avatar--last">
       }
     </app-scoreboard>
   </div>
 
   <app-table [mode]="playerMode"></app-table>
 </div>
+
+@if(showPauseMenu()) {
+<app-pause></app-pause>
+}
+
+<div class="footer" [ngClass]="{
+  'footer--first': winnerInfo?.firstPlayerWon,
+  'footer--second': winnerInfo?.secondPlayerWon
+  }"></div>

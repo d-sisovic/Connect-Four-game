@@ -1,3 +1,6 @@
+@use "../../../styles/variables";
+@use "../../../styles/breakpoints";
+
 .container {
   display: flex;
   min-height: 100vh;
@@ -8,6 +11,8 @@
   .logo {
     width: 5.2rem;
     height: 5.2rem;
+    margin-left: auto;
+    margin-right: auto;
     margin-bottom: 7.9rem;
   }
 
@@ -15,5 +20,25 @@
     gap: 3rem;
     display: flex;
     flex-direction: column;
+  }
+}
+
+@include breakpoints.mq(tablet) {
+  .container {
+    margin: 0 auto;
+
+    .card {
+      width: 48rem;
+      display: flex;
+      height: 53.7rem;
+      border-radius: 4rem;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+      padding: 7rem 4rem 6rem 4rem;
+      background: variables.$purple;
+      border: 0.3rem solid variables.$black;
+      box-shadow: 0 1rem 0 0 variables.$black;
+    }
   }
 }

@@ -1,9 +1,10 @@
+import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-scoreboard',
   standalone: true,
-  imports: [],
+  imports: [NgClass],
   templateUrl: './scoreboard.component.html',
   styleUrl: './scoreboard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -11,5 +12,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 export class ScoreboardComponent {
 
   @Input() score!: number;
+  @Input() ownScore!: boolean;
+  @Input() desktopMode!: boolean;
   @Input({ required: true }) label!: string;
 }

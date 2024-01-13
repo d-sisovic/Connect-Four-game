@@ -1,19 +1,26 @@
+import { NgClass } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { GameMode } from '../../ts/enum/game-mode.enum';
-import { ActivatedRoute, Router } from '@angular/router';
-import { GameService } from '../../services/game.service';
+import { PauseComponent } from '../pause/pause.component';
 import { BadgeComponent } from '../ui/badge/badge.component';
+import { IPlayerWin } from '../../ts/models/player-win.model';
+import { UtilUiService } from '../../services/util-ui.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { IPlayerScore } from '../../ts/models/player-score.model';
 import { GameFlowService } from '../../services/game-flow.service';
 import { TableComponent } from './components/table/table.component';
 import { GameLogicService } from '../../services/game-logic.service';
 import { ScoreboardComponent } from './components/scoreboard/scoreboard.component';
-import { ChangeDetectionStrategy, Component, OnInit, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, OnInit, Signal, effect, inject } from '@angular/core';
 
 @Component({
   selector: 'app-game',
   standalone: true,
   imports: [
+    NgClass,
     BadgeComponent,
     TableComponent,
+    PauseComponent,
     ScoreboardComponent
   ],
   templateUrl: './game.component.html',
@@ -22,35 +29,60 @@ import { ChangeDetectionStrategy, Component, OnInit, effect, inject } from '@ang
 })
 export class GameComponent implements OnInit {
 
-  private readonly router = inject(Router);
-  private readonly gameService = inject(GameService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly cdRef = inject(ChangeDetectorRef);
+  private readonly utilUiService = inject(UtilUiService);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly gameFlowService = inject(GameFlowService);
   private readonly gameLogicService = inject(GameLogicService);
 
   public playerMode!: GameMode;
+  public winnerInfo!: IPlayerWin | null;
+
+  public showPauseMenu!: Signal<boolean>;
+  public playersScore!: Signal<IPlayerScore>;
 
   constructor() {
     effect(() => {
-      const board = this.gameService.getBoard();
-      const winnerInfo = this.gameLogicService.doesGameHaveWinningIndexes(board);
+      const board = this.gameFlowService.getBoard();
+      const winnerInfo = this.gameLogicService.doesGameHaveWinner(board);
 
-      if (!winnerInfo) { return; }
+      if (winnerInfo) {
+        this.gameFlowService.setWinnerInfo(winnerInfo);
+        return;
+      }
 
-      this.gameFlowService.setWinnerInfo(winnerInfo);
+      const drawCondition = this.gameLogicService.doesGameHaveDrawCondition(board);
+
+      if (drawCondition) {
+        this.gameFlowService.setDrawResult(true);
+      }
     });
   }
 
   public ngOnInit(): void {
+    this.watchSetWinnerInfo();
+
+    this.showPauseMenu = this.utilUiService.getShowPauseMenu;
+    this.playersScore = this.gameFlowService.getPlayerScores;
     this.playerMode = this.activatedRoute.snapshot.params['mode'];
   }
 
+  private watchSetWinnerInfo(): void {
+    this.gameFlowService.getWinnerInfo$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(winnerInfo => {
+        this.winnerInfo = winnerInfo;
+        this.cdRef.markForCheck();
+      })
+  }
+
   public onSelectMenu(): void {
-    this.router.navigateByUrl('');
+    this.utilUiService.setShowPauseMenu(true);
   }
 
   public onRestartGame(): void {
-
+    this.gameFlowService.restartGame();
   }
 
   public get getPlayerMode(): typeof GameMode {
