@@ -1,4 +1,5 @@
 @use "../../../../../styles/variables";
+@use "../../../../../styles/breakpoints";
 
 .container {
   display: flex;
@@ -18,5 +19,35 @@
 
   .score {
     font-size: 3.2rem;
+  }
+}
+
+@include breakpoints.mq(tablet) {
+  .container {
+    height: 10rem;
+    width: 27.2rem;
+    font-size: 2rem;
+    justify-content: space-around;
+
+    &--own {
+      flex-direction: row;
+      padding: 1.4rem 2rem 1.5rem 4.4rem;
+    }
+
+    &--other {
+      flex-direction: row-reverse;
+      padding: 1.4rem 4.4rem 1.5rem 2rem;
+    }
+
+    &--desktop {
+      height: 16rem;
+      width: 14.1rem;
+      flex-direction: column;
+      padding: 4.6rem 2.7rem 1.7rem 2.9rem;
+    }
+
+    .score {
+      font-size: 5.6rem;
+    }
   }
 }

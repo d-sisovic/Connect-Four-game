@@ -1,4 +1,5 @@
 @use "../../../../../styles/variables";
+@use "../../../../../styles/breakpoints";
 
 .turn {
   left: 50%;
@@ -34,5 +35,11 @@
     .score {
       font-size: 5.6rem;
     }
+  }
+}
+
+@include breakpoints.mq(tablet) {
+  .turn {
+    top: calc(100% - 8.5rem);
   }
 }

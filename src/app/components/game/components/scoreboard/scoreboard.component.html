@@ -1,4 +1,8 @@
-<div class="container">
+<div class="container" [ngClass]="{
+  'container--own': ownScore,
+  'container--other': !ownScore,
+  'container--desktop': desktopMode
+  }">
   <span>{{label}}</span>
 
   <span class="score">{{score}}</span>

@@ -1,4 +1,24 @@
 <div class="container">
+  <div class="scoreboard">
+    <app-scoreboard label="YOU" [desktopMode]="true" [score]="playersScore().playerOneScore" [ownScore]="true">
+      @if(mode === getPlayerMode.CPU) {
+      <img src="assets/images/you.svg" alt="you" class="avatar">
+      } @else {
+      <img src="assets/images/player-one.svg" alt="player-one" class="avatar">
+      }
+    </app-scoreboard>
+  </div>
+
+  <div class="scoreboard">
+    <app-scoreboard [label]="mode" [desktopMode]="true" [score]="playersScore().playerTwoScore">
+      @if(mode === getPlayerMode.CPU) {
+      <img src="assets/images/cpu.svg" alt="cpu" class="avatar">
+      } @else {
+      <img src="assets/images/player-two.svg" alt="player-two" class="avatar">
+      }
+    </app-scoreboard>
+  </div>
+
   <img src="/assets/images/board-layer-black-small.svg" alt="black-board" class="black-board">
   <img src="/assets/images/board-layer-white-small.svg" alt="white-board" class="white-board">
 
@@ -54,12 +74,11 @@
 
   @if(winnerInfo) {
   <app-winner [winnerInfo]="winnerInfo"></app-winner>
-  <div class="footer" [ngClass]="{
-      'footer--first': winnerInfo.firstPlayerWon,
-      'footer--second': winnerInfo.secondPlayerWon
-      }"></div>
+  } @else {
+  @if (drawEvent$ | async) {
+  <app-draw></app-draw>
   } @else {
   <app-turn [mode]="mode"></app-turn>
-  <div class="footer"></div>
+  }
   }
 </div>

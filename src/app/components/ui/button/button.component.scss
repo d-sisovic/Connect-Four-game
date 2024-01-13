@@ -26,6 +26,10 @@
     box-shadow: 0 1rem 0 0 variables.$dark-purple;
   }
 
+  &--centered {
+    justify-content: center;
+  }
+
   &--red {
     color: variables.$white;
     background: variables.$red;

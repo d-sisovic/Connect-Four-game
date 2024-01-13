@@ -1,0 +1,13 @@
+<div class="container">
+  <div class="card">
+    <h1 class="title">Pause</h1>
+
+    <div class="button">
+      <app-button label="Continue game" [color]="getColor.WHITE" [centeredText]="true" (clickEvent)="onContinueGame()"></app-button>
+
+      <app-button label="Restart" [color]="getColor.WHITE" [centeredText]="true" (clickEvent)="onRestartGame()"></app-button>
+
+      <app-button label="Quit game" [color]="getColor.RED" [centeredText]="true" (clickEvent)="onQuitGame()"></app-button>
+    </div>
+  </div>
+</div>

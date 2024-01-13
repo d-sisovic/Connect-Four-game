@@ -10,11 +10,15 @@ export class GameLogicService {
 
   constructor() { }
 
-  public doesGameHaveWinningIndexes(board: (boolean | null)[][]): IPlayerWin | null {
+  public doesGameHaveWinner(board: (boolean | null)[][]): IPlayerWin | null {
     const rowsHaveWinner = this.doesRowHaveWinner(board);
-    const columnsHaveWinner = this.doesRowHaveWinner(this.transformColumnsToRows(board));
+    const columnsHaveWinner = this.flipColumnWinningIndexes(this.doesRowHaveWinner(this.transformColumnsToRows(board)));
 
     return rowsHaveWinner || columnsHaveWinner;
+  }
+
+  public doesGameHaveDrawCondition(board: (boolean | null)[][]): boolean {
+    return board.every(row => row.every(value => value || value === false));
   }
 
   public doesRowHaveWinner(board: (boolean | null)[][]): IPlayerWin | null {
@@ -26,7 +30,7 @@ export class GameLogicService {
         return {
           firstPlayerWon: !!firstPlayerIndexes.length,
           secondPlayerWon: !!secondPlayerIndexes.length,
-          winningIndexes: firstPlayerIndexes || secondPlayerIndexes
+          winningIndexes: [...firstPlayerIndexes, ...secondPlayerIndexes]
         };
       })
       .find(item => item.winningIndexes.length) || null;
@@ -41,19 +45,30 @@ export class GameLogicService {
       .map((_, columnIndex) => Array.from({ length: rowsLength }).map((_, rowIndex) => board[rowIndex][columnIndex]))
   }
 
+  private flipColumnWinningIndexes(columnInfo: IPlayerWin | null): IPlayerWin | null {
+    if (!columnInfo) { return null; }
+
+    const { winningIndexes } = columnInfo;
+    const flippedWinningIndexes = winningIndexes.map(item => ({ rowIndex: item.columnIndex, columnIndex: item.rowIndex }));
+
+    return { ...columnInfo, winningIndexes: flippedWinningIndexes };
+  }
+
   private findConsecutiveIndex(row: Array<boolean | null>, rowIndex: number, firstPlayer: boolean): IPlayerWinRowColumn[] {
+    const iterator = this.getIteratorFromCirclesToWin();
+
     for (let i = 0; i <= row.length; i++) {
-      const currentNextValuesSame = Array
-        .from({ length: GameSettings.CIRCLE_FOR_WIN })
-        .map((_, index) => row[i + index]);
+      const currentNextValuesSame = iterator.map((_, index) => row[i + index]);
 
       if (currentNextValuesSame.every(value => firstPlayer ? value : value === false)) {
-        return Array
-          .from({ length: GameSettings.CIRCLE_FOR_WIN })
-          .map((_, index) => ({ rowIndex, columnIndex: i + index }));
+        return iterator.map((_, index) => ({ rowIndex, columnIndex: i + index }));
       }
     }
 
     return [];
+  }
+
+  private getIteratorFromCirclesToWin(): string[] {
+    return Array.from({ length: GameSettings.CIRCLE_FOR_WIN });
   }
 }

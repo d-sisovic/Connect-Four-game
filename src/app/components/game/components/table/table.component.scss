@@ -1,6 +1,8 @@
 @use "../../../../../styles/variables";
+@use "../../../../../styles/breakpoints";
 
 $cell-width: 3.95rem;
+$cell-width-tabletdesktop: 6.5rem;
 
 @for $i from 0 through 5 {
   @keyframes moveAnimation#{$i} {
@@ -17,6 +19,17 @@ $cell-width: 3.95rem;
 .container {
   height: 32rem;
   position: relative;
+
+  .scoreboard {
+    display: none;
+
+    .avatar {
+      left: 50%;
+      top: -2.95rem;
+      position: absolute;
+      transform: translateX(-50%);
+    }
+  }
 
   .black-board,
   .white-board {
@@ -42,6 +55,7 @@ $cell-width: 3.95rem;
     top: 0.79rem;
     width: 32rem;
     display: grid;
+    cursor: pointer;
     height: 27.5rem;
     position: absolute;
     transform: translateX(-50%);
@@ -81,23 +95,72 @@ $cell-width: 3.95rem;
       }
     }
   }
+}
 
-  .footer {
-    left: -2rem;
-    z-index: -1;
-    width: 100vw;
-    height: 21rem;
-    position: absolute;
-    top: calc(100% - 1.5rem);
-    border-radius: 6rem 6rem 0 0;
-    background: variables.$dark-purple;
+@include breakpoints.mq(tablet) {
+  .container {
+    height: 59.4rem;
 
-    &--first {
-      background: variables.$red;
+    .black-board {
+      content: url("/assets/images/board-layer-black-large.svg");
     }
 
-    &--second {
-      background: variables.$yellow;
+    .white-board {
+      content: url("/assets/images/board-layer-white-large.svg");
+    }
+
+    .grid {
+      top: 1.6rem;
+      gap: 1.79rem;
+      width: 56.5rem;
+      height: 47.8rem;
+      grid-template-rows: repeat(6, $cell-width-tabletdesktop);
+      grid-template-columns: repeat(7, $cell-width-tabletdesktop);
+
+      .cell {
+        .marker {
+          display: none;
+        }
+
+        .winner {
+          top: 1.8rem;
+          left: 1.8rem;
+          width: 3.4rem;
+          height: 3.4rem;
+        }
+      }
+    }
+  }
+}
+
+@include breakpoints.mq(desktop) {
+  .container {
+    .scoreboard {
+      display: block;
+
+      &:first-child,
+      &:nth-child(2) {
+        position: absolute;
+        top: calc(50% - 3.8rem);
+        transform: translateY(-50%);
+      }
+
+      &:first-child {
+        left: -20.1rem;
+      }
+
+      &:nth-child(2) {
+        right: -20.1rem;
+      }
+    }
+
+    .grid {
+      .cell {
+        .marker {
+          display: block;
+          top: calc(-100% + 1.3rem);
+        }
+      }
     }
   }
 }
