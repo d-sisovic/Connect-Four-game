@@ -38,7 +38,7 @@ export class GameUiService {
   }
 
   public getCirclePath(isFirstPlayerPlaying: boolean): string {
-    const isMobileView = window.innerWidth <= GameSettings.MOBILE_VIEWPORT;
+    const isMobileView = window.innerWidth < GameSettings.MOBILE_VIEWPORT;
     const circleSuffix = isMobileView ? 'small' : 'large';
 
     return isFirstPlayerPlaying ? `counter-red-${circleSuffix}` : `counter-yellow-${circleSuffix}`;
