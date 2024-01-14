@@ -195,6 +195,10 @@ export class GameFlowService {
     return computed(() => this.boardStore().firstPlayerTurn);
   }
 
+  public get isGamePaused(): Signal<boolean> {
+    return computed(() => this.boardStore().isPaused);
+  }
+
   public get isDrawEvent(): boolean {
     return this.drawEvent.getValue();
   }

@@ -17,10 +17,6 @@ export class GameLogicService {
     return rowsHaveWinner || columnsHaveWinner;
   }
 
-  public doesGameHaveDrawCondition(board: (boolean | null)[][]): boolean {
-    return board.every(row => row.every(value => value || value === false));
-  }
-
   public doesRowHaveWinner(board: (boolean | null)[][]): IPlayerWin | null {
     return board
       .map((row, rowIndex) => {
@@ -45,17 +41,12 @@ export class GameLogicService {
       .map((_, columnIndex) => Array.from({ length: rowsLength }).map((_, rowIndex) => board[rowIndex][columnIndex]))
   }
 
-  private flipColumnWinningIndexes(columnInfo: IPlayerWin | null): IPlayerWin | null {
-    if (!columnInfo) { return null; }
-
-    const { winningIndexes } = columnInfo;
-    const flippedWinningIndexes = winningIndexes.map(item => ({ rowIndex: item.columnIndex, columnIndex: item.rowIndex }));
-
-    return { ...columnInfo, winningIndexes: flippedWinningIndexes };
+  public doesGameHaveDrawCondition(board: (boolean | null)[][]): boolean {
+    return board.every(row => row.every(value => value || value === false));
   }
 
-  private findConsecutiveIndex(row: Array<boolean | null>, rowIndex: number, firstPlayer: boolean): IPlayerWinRowColumn[] {
-    const iterator = this.getIteratorFromCirclesToWin();
+  public findConsecutiveIndex(row: Array<boolean | null>, rowIndex: number, firstPlayer: boolean): IPlayerWinRowColumn[] {
+    const iterator = this.getIteratorFromCirclesToWin(GameSettings.CIRCLE_FOR_WIN);
 
     for (let i = 0; i <= row.length; i++) {
       const currentNextValuesSame = iterator.map((_, index) => row[i + index]);
@@ -68,7 +59,16 @@ export class GameLogicService {
     return [];
   }
 
-  private getIteratorFromCirclesToWin(): string[] {
-    return Array.from({ length: GameSettings.CIRCLE_FOR_WIN });
+  public flipColumnWinningIndexes(columnInfo: IPlayerWin | null): IPlayerWin | null {
+    if (!columnInfo) { return null; }
+
+    const { winningIndexes } = columnInfo;
+    const flippedWinningIndexes = winningIndexes.map(item => ({ rowIndex: item.columnIndex, columnIndex: item.rowIndex }));
+
+    return { ...columnInfo, winningIndexes: flippedWinningIndexes };
+  }
+
+  public getIteratorFromCirclesToWin(length: number): string[] {
+    return Array.from({ length });
   }
 }

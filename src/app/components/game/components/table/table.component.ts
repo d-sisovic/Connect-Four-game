@@ -7,13 +7,13 @@ import { GameMode } from '../../../../ts/enum/game-mode.enum';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IPlayerWin } from '../../../../ts/models/player-win.model';
 import { GameUiService } from '../../../../services/game-ui.service';
+import { GameCpuService } from '../../../../services/game-cpu.service';
 import { IPlayerScore } from '../../../../ts/models/player-score.model';
 import { GameFlowService } from '../../../../services/game-flow.service';
 import { ScoreboardComponent } from '../scoreboard/scoreboard.component';
 import {
-  AfterViewInit, inject, ChangeDetectionStrategy, Component,
-  DestroyRef, ElementRef, Input, OnInit, QueryList, Renderer2,
-  Signal, ViewChildren, OnDestroy, ChangeDetectorRef
+  AfterViewInit, inject, ChangeDetectionStrategy, Component, DestroyRef, ElementRef,
+  Input, OnInit, QueryList, Renderer2, Signal, ViewChildren, OnDestroy, ChangeDetectorRef
 } from '@angular/core';
 
 @Component({
@@ -40,6 +40,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly cdRef = inject(ChangeDetectorRef);
   private readonly gameUiService = inject(GameUiService);
+  private readonly gameCpuService = inject(GameCpuService);
   private readonly gameFlowService = inject(GameFlowService);
 
   public animatedGrid!: boolean;
@@ -61,6 +62,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.watchClearAllFields();
     this.watchChangeMarkerColors();
     this.watchClearCellMarkersEvent();
+    this.watchMarkCpuSelectedCircle();
 
     this.gameCounter = this.gameFlowService.getGameCounter;
     this.gridDisabled = this.gameFlowService.getGridDisabled;
@@ -89,7 +91,8 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.gameFlowService.setCircleToBoard(parsedColumn);
 
     this.setCircleToCell(parsedColumn);
-    this.gameFlowService.handleNextUserPlay();
+
+    setTimeout(() => this.gameFlowService.handleNextUserPlay(), 100);
 
     // Clears markers from the top if the column is full
     if (!this.isHoveredColumnFull(parsedColumn)) { return; }
@@ -225,13 +228,19 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewInit {
   private watchClearAllFields(): void {
     this.gameFlowService.watchClearAllFields$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.gameUiService.clearAllFields(this.cells))
+      .subscribe(() => this.gameUiService.clearAllFields(this.cells));
   }
 
   private watchClearCellMarkersEvent(): void {
     this.gameUiService.watchClearCellMarkersEvent$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.gameUiService.clearCellMarkers(this.cells))
+      .subscribe(() => this.gameUiService.clearCellMarkers(this.cells));
+  }
+
+  private watchMarkCpuSelectedCircle(): void {
+    this.gameCpuService.watchMarkRandomCircleEvent$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(column => this.setCircleToCell(column));
   }
 
   public get getPlayerMode(): typeof GameMode {
