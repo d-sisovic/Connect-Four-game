@@ -31,8 +31,8 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: []
-- Live Site URL: []
+- Solution URL: [https://www.frontendmentor.io/solutions/connect-four-game-angular-NUX3OQ8M25]
+- Live Site URL: [https://d-sisovic.github.io/Connect-Four-game/#/]
 
 ## My process
 
