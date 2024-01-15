@@ -15,14 +15,24 @@ export class GameCpuService {
   constructor() { }
 
   public getNextCpuMove(board: (boolean | null)[][]): number | null {
+    const winColumn = this.getCpuWinColumn(board);
+
+    if (winColumn !== null) { return winColumn; }
+
     const columnByRow = this.getCpuColumn(board, this.doesPlayerHaveNRowMatches(board));
     const columnByColumn = this.getCpuColumn(board, this.doesPlayerHaveNColumnMatches(board));
+    const columnNumber = this.findColumnNumber(columnByRow, columnByColumn);
 
-    const columnNumber = [columnByRow, columnByColumn].find(value => typeof value === 'number');
+    return typeof columnNumber === 'number' ? columnNumber : this.getRandomColumnIndex(board);
+  }
 
-    if (columnNumber !== undefined) { return columnNumber; }
+  // Checks when there is one more empty spot for the win, and provides column of that spot
+  public getCpuWinColumn(board: (boolean | null)[][]): number | null {
+    const columnByRow = this.getCpuColumn(board, this.doesPlayerHaveNRowMatches(board, false));
+    const columnByColumn = this.getCpuColumn(board, this.doesPlayerHaveNColumnMatches(board, false));
+    const columnNumber = this.findColumnNumber(columnByRow, columnByColumn);
 
-    return this.getRandomColumnIndex(board);
+    return typeof columnNumber === 'number' ? columnNumber : null;
   }
 
   public emitMarkRandomCircleEvent(randomColumnIndex: number): void {
@@ -31,6 +41,10 @@ export class GameCpuService {
 
   public get watchMarkRandomCircleEvent$(): Observable<number> {
     return this.markRandomCircleEvent.asObservable();
+  }
+
+  private findColumnNumber(columnByRow: number | null, columnByColumn: number | null): number | null | undefined {
+    return [columnByRow, columnByColumn].find(value => typeof value === 'number');
   }
 
   private getCpuColumn(board: (boolean | null)[][], values: IPlayerWinRowColumn[]): number | null {
@@ -46,27 +60,27 @@ export class GameCpuService {
     return null;
   }
 
-  private doesPlayerHaveNRowMatches(board: (boolean | null)[][]): IPlayerWinRowColumn[] {
+  private doesPlayerHaveNRowMatches(board: (boolean | null)[][], firstPlayer: boolean = true): IPlayerWinRowColumn[] {
     return board
-      .map((row, rowIndex) => this.findConsecutiveIndexOfPlayer(row, rowIndex))
+      .map((row, rowIndex) => this.findConsecutiveIndexOfPlayer(row, rowIndex, firstPlayer))
       .find(rowData => rowData.length) || [];
   }
 
-  private doesPlayerHaveNColumnMatches(board: (boolean | null)[][]): IPlayerWinRowColumn[] {
+  private doesPlayerHaveNColumnMatches(board: (boolean | null)[][], firstPlayer: boolean = true): IPlayerWinRowColumn[] {
     const transformedRows = this.gameLogicService.transformColumnsToRows(board);
-    const rowMatches = this.doesPlayerHaveNRowMatches(transformedRows);
+    const rowMatches = this.doesPlayerHaveNRowMatches(transformedRows, firstPlayer);
     const manualWinnerInfo = { firstPlayerWon: false, secondPlayerWon: false, winningIndexes: rowMatches };
 
     return this.gameLogicService.flipColumnWinningIndexes(manualWinnerInfo)?.winningIndexes || [];
   }
 
-  private findConsecutiveIndexOfPlayer(row: Array<boolean | null>, rowIndex: number): IPlayerWinRowColumn[] {
+  private findConsecutiveIndexOfPlayer(row: Array<boolean | null>, rowIndex: number, firstPlayer: boolean): IPlayerWinRowColumn[] {
     // Algorithm will look to fill gap when there is [null, true, true, true] or [true, true, true, null] per x/y axis, hence it will need 4 places
     const iterator = this.gameLogicService.getIteratorFromCirclesToWin(4);
 
     for (let i = 0; i <= row.length; i++) {
       const currentNextValues = iterator.map((_, index) => row[i + index]);
-      const doesHaveRowMatching = this.doesHaveMatch(currentNextValues);
+      const doesHaveRowMatching = this.doesHaveMatch(currentNextValues, firstPlayer);
 
       if (doesHaveRowMatching) {
         return iterator.map((_, index) => ({ rowIndex, columnIndex: i + index }));
@@ -76,22 +90,22 @@ export class GameCpuService {
     return [];
   }
 
-  private doesHaveMatch(values: (boolean | null)[]): boolean {
-    return this.isFirstValueNullAndOthersTrue(values) || this.isLastValueNullAndOthersTrue(values);
+  private doesHaveMatch(values: (boolean | null)[], firstPlayer: boolean): boolean {
+    return this.isFirstValueNullAndOthersTrue(values, firstPlayer) || this.isLastValueNullAndOthersTrue(values, firstPlayer);
   }
 
-  private isFirstValueNullAndOthersTrue(values: (boolean | null)[]): boolean {
+  private isFirstValueNullAndOthersTrue(values: (boolean | null)[], firstPlayer: boolean): boolean {
     const [firstValue] = values;
     const allExceptFirstValues = values.slice(1, values.length);
 
-    return firstValue === null && allExceptFirstValues.every(value => value);
+    return firstValue === null && allExceptFirstValues.every(value => firstPlayer ? value : value === false);
   }
 
-  private isLastValueNullAndOthersTrue(values: (boolean | null)[]): boolean {
+  private isLastValueNullAndOthersTrue(values: (boolean | null)[], firstPlayer: boolean): boolean {
     const lastValue = values[values.length - 1];
     const allExceptLastValues = values.slice(0, values.length - 1);
 
-    return lastValue === null && allExceptLastValues.every(value => value);
+    return lastValue === null && allExceptLastValues.every(value => firstPlayer ? value : value === false);
   }
 
   private getRandomColumnIndex(board: (boolean | null)[][]): number | null {
