@@ -12,4 +12,10 @@ describe('UtilUiService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should show pause menu', () => {
+    service.setShowPauseMenu(true);
+
+    expect(service.getShowPauseMenu()).toBe(true);
+  });
 });

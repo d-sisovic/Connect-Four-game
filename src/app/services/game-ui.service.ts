@@ -17,16 +17,10 @@ export class GameUiService {
     this.renderer2 = rendererFactory.createRenderer(null, null);
   }
 
-  public clearAllChildrenFromCell(cell: ElementRef<any>): void {
+  public clearChildrenFromCell(cell: ElementRef<any>, filterFn?: (child: any) => boolean): void {
     Array
       .from(cell.nativeElement.children)
-      .forEach(child => this.renderer2.removeChild(cell.nativeElement, child));
-  }
-
-  public clearMarkerFromCell(cell: ElementRef<any>): void {
-    Array
-      .from(cell.nativeElement.children)
-      .filter(child => this.isElementMarker(child))
+      .filter(child => !filterFn || filterFn(child))
       .forEach(child => this.renderer2.removeChild(cell.nativeElement, child));
   }
 
@@ -45,11 +39,11 @@ export class GameUiService {
   }
 
   public clearAllFields(cells: QueryList<ElementRef>): void {
-    cells.forEach(cell => this.clearAllChildrenFromCell(cell));
+    cells.forEach(cell => this.clearChildrenFromCell(cell));
   }
 
   public clearCellMarkers(cells: QueryList<ElementRef>): void {
-    cells.forEach(cell => this.clearMarkerFromCell(cell));
+    cells.forEach(cell => this.clearChildrenFromCell(cell, child => this.isElementMarker(child)));
   }
 
   public getMatchingElementByRowColumn(cells: QueryList<ElementRef>, elementRow: string, elementColumn: string): ElementRef<any> | null {
